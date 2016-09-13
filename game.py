@@ -1,6 +1,3 @@
-
-import copy
-
 from hexagon import Hexagon
 
 # ______________________________________________________________________________
@@ -75,9 +72,63 @@ class Game:
         return None
 
     def connections(self):
-        """Returns all the connections between hexagons in THIS game."""
-        number_of_connections = self.number_of_connections()
-        return Game.CONNECTIONS[:number_of_connections]
+        """Returns all the connections between hexagons in this game.
+
+        Example of connections' structure (numbers are the ids of hexagons):
+            
+                | 0 |
+              | 1 | 2 |
+
+            connections = [
+                [
+                    [0, Hexagon.BOTTOM_LEFT],
+                    [1, Hexagon.TOP_RIGHT],
+                ],
+                [
+                    [0, Hexagon.BOTTOM_RIGHT],
+                    [2, Hexagon.TOP_LEFT],
+                ],
+                [
+                    [1, Hexagon.MIDDLE_RIGHT],
+                    [2, Hexagon.MIDDLE_LEFT],
+                ],
+
+                ...
+            ]
+
+        The function divides all hexagons into groups of three where all three 
+        of them connect. Then it adds all the connections between those three 
+        hexagons to the list that is returned."""
+        connections = []
+        depth = self.depth()
+
+        for current_depth in range(2, depth + 1):
+            upper_hexagon_idxs = Game.hexagon_idxs_at_depth(current_depth - 1)
+            bottom_hexagon_idxs = Game.hexagon_idxs_at_depth(current_depth)
+
+            for list_idx, upper_hexagon_idx in enumerate(upper_hexagon_idxs):
+                top_hexagon_idx = upper_hexagon_idx
+                bottom_left_hexagon_idx = bottom_hexagon_idxs[list_idx]
+                bottom_right_hexagon_idx = bottom_hexagon_idxs[list_idx + 1]
+
+                connection1 = [
+                    [top_hexagon_idx, Hexagon.BOTTOM_LEFT],
+                    [bottom_left_hexagon_idx, Hexagon.TOP_RIGHT],
+                ]
+                connection2 = [
+                    [top_hexagon_idx, Hexagon.BOTTOM_RIGHT],
+                    [bottom_right_hexagon_idx, Hexagon.TOP_LEFT],
+                ]
+                connection3 = [
+                    [bottom_left_hexagon_idx, Hexagon.MIDDLE_RIGHT],
+                    [bottom_right_hexagon_idx, Hexagon.MIDDLE_LEFT],
+                ]
+
+                connections.append(connection1)
+                connections.append(connection2)
+                connections.append(connection3)
+
+        return connections
 
     def colors_in_connection(self, connection):
         """Returns the colors siding the given connection."""
@@ -144,140 +195,19 @@ class Game:
                 return True
         return False
 
+    def hexagon_idxs_at_depth(depth):
+        hexagon_idxs = []
+        idx = 0
+        for current_depth in range(1, depth + 1):
+            idx += current_depth - 1
+            if current_depth == depth:
+                number_of_hexagons_in_depth = current_depth
+                hexagon_idxs = Game.sequential_number_list(
+                    idx, idx + number_of_hexagons_in_depth)
+        return hexagon_idxs
 
-    # Connections should be got mathematically
-
-    CONNECTIONS = [
-        [
-            [0, Hexagon.BOTTOM_LEFT],
-            [1, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [0, Hexagon.BOTTOM_RIGHT],
-            [2, Hexagon.TOP_LEFT],
-        ],
-        [
-            [1, Hexagon.MIDDLE_RIGHT],
-            [2, Hexagon.MIDDLE_LEFT],
-        ],
-
-
-        [
-            [1, Hexagon.BOTTOM_LEFT],
-            [3, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [1, Hexagon.BOTTOM_RIGHT],
-            [4, Hexagon.TOP_LEFT],
-        ],
-        [
-            [3, Hexagon.MIDDLE_RIGHT],
-            [4, Hexagon.MIDDLE_LEFT],
-        ],
-
-        [
-            [2, Hexagon.BOTTOM_LEFT],
-            [4, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [2, Hexagon.BOTTOM_RIGHT],
-            [5, Hexagon.TOP_LEFT],
-        ],
-        [
-            [4, Hexagon.MIDDLE_RIGHT],
-            [5, Hexagon.MIDDLE_LEFT],
-        ],
-
-
-        [
-            [3, Hexagon.BOTTOM_LEFT],
-            [6, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [3, Hexagon.BOTTOM_RIGHT],
-            [7, Hexagon.TOP_LEFT],
-        ],
-        [
-            [6, Hexagon.MIDDLE_RIGHT],
-            [7, Hexagon.MIDDLE_LEFT],
-        ],
-
-        [
-            [4, Hexagon.BOTTOM_LEFT],
-            [7, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [4, Hexagon.BOTTOM_RIGHT],
-            [8, Hexagon.TOP_LEFT],
-        ],
-        [
-            [7, Hexagon.MIDDLE_RIGHT],
-            [8, Hexagon.MIDDLE_LEFT],
-        ],
-
-        [
-            [5, Hexagon.BOTTOM_LEFT],
-            [8, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [5, Hexagon.BOTTOM_RIGHT],
-            [9, Hexagon.TOP_LEFT],
-        ],
-        [
-            [8, Hexagon.MIDDLE_RIGHT],
-            [9, Hexagon.MIDDLE_LEFT],
-        ],
-
-
-        [
-            [6, Hexagon.BOTTOM_LEFT],
-            [10, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [6, Hexagon.BOTTOM_RIGHT],
-            [11, Hexagon.TOP_LEFT],
-        ],
-        [
-            [10, Hexagon.MIDDLE_RIGHT],
-            [11, Hexagon.MIDDLE_LEFT],
-        ],
-
-        [
-            [7, Hexagon.BOTTOM_LEFT],
-            [11, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [7, Hexagon.BOTTOM_RIGHT],
-            [12, Hexagon.TOP_LEFT],
-        ],
-        [
-            [11, Hexagon.MIDDLE_RIGHT],
-            [12, Hexagon.MIDDLE_LEFT],
-        ],
-
-        [
-            [8, Hexagon.BOTTOM_LEFT],
-            [12, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [8, Hexagon.BOTTOM_RIGHT],
-            [13, Hexagon.TOP_LEFT],
-        ],
-        [
-            [12, Hexagon.MIDDLE_RIGHT],
-            [13, Hexagon.MIDDLE_LEFT],
-        ],
-
-        [
-            [9, Hexagon.BOTTOM_LEFT],
-            [13, Hexagon.TOP_RIGHT],
-        ],
-        [
-            [9, Hexagon.BOTTOM_RIGHT],
-            [14, Hexagon.TOP_LEFT],
-        ],
-        [
-            [13, Hexagon.MIDDLE_RIGHT],
-            [14, Hexagon.MIDDLE_LEFT],
-        ],
-    ]
+    def sequential_number_list(from_number, to_number):
+        number_list = []
+        for number in range(from_number, to_number):
+            number_list.append(number)
+        return number_list
