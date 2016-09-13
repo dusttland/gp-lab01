@@ -16,33 +16,33 @@ class Hexagon:
 
     def __init__(self, colors):
         if len(colors) == 6:
-            self.colors = colors
+            self._colors = colors
         else:
             raise ValueError("Not a valid hexagon.")
 
     def __str__(self):
-        return "%s" % self.colors
+        return "%s" % self._colors
 
 
     # Queries
 
     def color(self, index):
         """Returns the color on a specified side."""
-        return self.colors[index]
+        return self._colors[index]
 
 
     # Commands
 
     def rotate(self):
         """Rotate clockwise."""
-        old_sixth_color = self.colors[5]
+        old_sixth_color = self._colors[5]
         for i in reversed(range(1, 6)):
-            self.colors[i] = self.colors[i-1]
-        self.colors[0] = old_sixth_color
+            self._colors[i] = self._colors[i-1]
+        self._colors[0] = old_sixth_color
 
     def rotate_counterclockwise(self):
         """Rotate counterclockwise."""
-        old_first_color = self.colors[0]
+        old_first_color = self._colors[0]
         for i in range(0, 5):
-            self.colors[i] = self.colors[i+1]
-        self.colors[5] = old_first_color
+            self._colors[i] = self._colors[i+1]
+        self._colors[5] = old_first_color

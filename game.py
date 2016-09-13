@@ -21,16 +21,16 @@ class Game:
         if not Game.valid_number_of_objects_in_triangle(number_of_hexagons):
             raise ValueError("Invalid number of hexagons.")
 
-        self.hexagons = []
+        self._hexagons = []
         for colors in hexagon_color_lists:
-            self.hexagons.append(Hexagon(colors))
+            self._hexagons.append(Hexagon(colors))
 
     def __str__(self):
         string = ""
         depth = 0
         number_of_objects_in_depth = 0
 
-        for idx, hexagon in enumerate(self.hexagons):
+        for idx, hexagon in enumerate(self._hexagons):
             if idx >= number_of_objects_in_depth:
                 depth += 1
                 number_of_objects_in_depth += depth
@@ -44,11 +44,11 @@ class Game:
 
     def hexagon(self, index):
         """Returns the hexagon at the specific index."""
-        return self.hexagons[index]
+        return self._hexagons[index]
 
     def number_of_hexagons(self):
         """Returns the number of hexagons in the game."""
-        return len(self.hexagons)
+        return len(self._hexagons)
 
     def is_solved(self):
         """Returns true if game is solved."""
@@ -116,14 +116,14 @@ class Game:
     def place_hexagon(self, hexagon, hexagon_index):
         """Places a new hexagon to the given location. If a hexagon exists
         in the indexed position, it will be replaced by the new one."""
-        self.hexagons[hexagon_index] = hexagon
+        self._hexagons[hexagon_index] = hexagon
 
     def switch_hexagons(self, hexagon_index1, hexagon_index2):
         """Switch hexagons' positions with each other. Inputs are hexagon 
         indexes."""
-        temp_hexagon = self.hexagons[hexagon_index1]
-        self.hexagons[hexagon_index1] = self.hexagons[hexagon_index2]
-        self.hexagons[hexagon_index2] = temp_hexagon
+        temp_hexagon = self._hexagons[hexagon_index1]
+        self._hexagons[hexagon_index1] = self._hexagons[hexagon_index2]
+        self._hexagons[hexagon_index2] = temp_hexagon
 
     def solve(self):
         """Solves the game according to current layout."""
