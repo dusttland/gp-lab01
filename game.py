@@ -1,4 +1,6 @@
 
+import copy
+
 from hexagon import Hexagon
 
 # ______________________________________________________________________________
@@ -16,14 +18,11 @@ class Game:
 
     """
 
-    def __init__(self, hexagon_color_lists):
-        number_of_hexagons = len(hexagon_color_lists)
+    def __init__(self, hexagons):
+        number_of_hexagons = len(hexagons)
         if not Game.valid_number_of_objects_in_triangle(number_of_hexagons):
             raise ValueError("Invalid number of hexagons.")
-
-        self._hexagons = []
-        for colors in hexagon_color_lists:
-            self._hexagons.append(Hexagon(colors))
+        self._hexagons = hexagons
 
     def __str__(self):
         string = ""
