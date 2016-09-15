@@ -32,16 +32,12 @@ class Hexagon:
 
     # Commands
 
-    def rotate(self):
-        """Rotate clockwise."""
-        old_sixth_color = self._colors[5]
-        for i in reversed(range(1, 6)):
-            self._colors[i] = self._colors[i-1]
-        self._colors[0] = old_sixth_color
+    def rotate(self, step):
+        """Rotate clockwise"""
+        step = -step % 6
+        self._colors = self._colors[step:] + self._colors[:step]
 
-    def rotate_counterclockwise(self):
-        """Rotate counterclockwise."""
-        old_first_color = self._colors[0]
-        for i in range(0, 5):
-            self._colors[i] = self._colors[i+1]
-        self._colors[5] = old_first_color
+    def rotate_counterclockwise(self, step):
+        """Rotate counterclockwise"""
+        step = step % 6
+        self._colors = self._colors[step:] + self._colors[:step]

@@ -109,15 +109,14 @@ def main():
 
     # Test hexagon rotation.
 
-    game.hexagon(2).rotate()
-    game.hexagon(2).rotate()
-    game.hexagon(3).rotate()
-    game.hexagon(6).rotate()
-    game.hexagon(6).rotate()
-    game.hexagon(13).rotate_counterclockwise()
-    game.hexagon(14).rotate_counterclockwise()
-    game.hexagon(12).rotate()
-    game.hexagon(11).rotate()
+    print(game.hexagon(2))
+    game.hexagon(2).rotate(3)
+    print(game.hexagon(2))
+    game.hexagon(2).rotate(1)
+    print(game.hexagon(2))
+    game.hexagon(2).rotate(2)
+    print(game.hexagon(2))
+
 
     print("Game solved: %r" % game.is_solved())
     print("Number of valid connections: %d" % game.number_of_valid_connections())
