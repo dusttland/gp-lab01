@@ -35,6 +35,11 @@ class Game:
 
         return string[1:]
 
+    def game_from_complete_list(complete_list):
+        """Static factory method to get game instance from complete list."""    
+        hexagons = Game.get_hexagons_from_complete_list(complete_list)
+        return Game(hexagons)
+
 
     # Queries
 
@@ -151,6 +156,10 @@ class Game:
                 number_of_valid_connections += 1
         return number_of_valid_connections
 
+    def number_of_invalid_connections(self):
+        """Returns the number of invalid connections."""
+        return self.number_of_connections() - self.number_of_valid_connections()
+
     def valid_connections(self):
         """Returns all valid connections as a list."""
         connections = self.connections()
@@ -175,6 +184,14 @@ class Game:
         self._hexagons[hexagon_index1] = self._hexagons[hexagon_index2]
         self._hexagons[hexagon_index2] = temp_hexagon
 
+    def as_complete_list(self):
+        """Returns the game as one complete list containing colors of all 
+        hexagons."""
+        complete_list = []
+        for hexagon in self.hexagos:
+            complete_list.append(hexagon.as_list())
+        return complete_list
+
     def solve(self):
         """Solves the game according to current layout."""
 
@@ -184,6 +201,12 @@ class Game:
 
 
     # Utility
+
+    def get_hexagons_from_complete_list(colors_list):
+        hexagons = []
+        for colors in colors_list:
+            hexagons.append(Hexagon(colors))
+        return hexagons
 
     def valid_number_of_objects_in_triangle(number):
         depth = 0

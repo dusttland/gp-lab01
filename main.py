@@ -80,16 +80,8 @@ HEXAGON_COLORS_LIST = [
 ]
 
 
-def hexagons_from_colors_list(hexagon_colors_list):
-    hexagons = []
-    for hexagon_colors in hexagon_colors_list:
-        hexagons.append(Hexagon(hexagon_colors))
-    return hexagons
-
-
 def main():
-    hexagons = hexagons_from_colors_list(HEXAGON_COLORS_LIST)
-    game = Game(hexagons)
+    game = Game.game_from_complete_list(HEXAGON_COLORS_LIST)
     game.solve()
 
     # Test hexagon placement.
