@@ -2,9 +2,11 @@ import sys
 sys.path.insert(0, 'aima-python-master')
 
 import search
+import time
 
 import color
 from game import Game
+from game_problem import GameProblem
 from hexagon import Hexagon
 
 # ______________________________________________________________________________
@@ -57,69 +59,38 @@ HEXAGON_COLORS_LIST = [
         color.BLUE, color.BLUE, color.YELLOW,
     ],
 
-    [ # 5th line
-        color.BLUE, color.BLUE, color.YELLOW,
-        color.GREEN, color.GREEN, color.YELLOW,
-    ],
-    [
-        color.YELLOW, color.RED, color.YELLOW,
-        color.BLUE, color.RED, color.BLUE,
-    ],
-    [
-        color.GREEN, color.RED, color.RED,
-        color.GREEN, color.YELLOW, color.YELLOW,
-    ],
-    [
-        color.GREEN, color.BLUE, color.BLUE,
-        color.YELLOW, color.YELLOW, color.GREEN,
-    ],
-    [
-        color.RED, color.BLUE, color.YELLOW,
-        color.YELLOW, color.RED, color.BLUE,
-    ],
+    # [ # 5th line
+    #     color.BLUE, color.BLUE, color.YELLOW,
+    #     color.GREEN, color.GREEN, color.YELLOW,
+    # ],
+    # [
+    #     color.YELLOW, color.RED, color.YELLOW,
+    #     color.BLUE, color.RED, color.BLUE,
+    # ],
+    # [
+    #     color.GREEN, color.RED, color.RED,
+    #     color.GREEN, color.YELLOW, color.YELLOW,
+    # ],
+    # [
+    #     color.GREEN, color.BLUE, color.BLUE,
+    #     color.YELLOW, color.YELLOW, color.GREEN,
+    # ],
+    # [
+    #     color.RED, color.BLUE, color.YELLOW,
+    #     color.YELLOW, color.RED, color.BLUE,
+    # ],
 ]
 
 
-def hexagons_from_colors_list(hexagon_colors_list):
-    hexagons = []
-    for hexagon_colors in hexagon_colors_list:
-        hexagons.append(Hexagon(hexagon_colors))
-    return hexagons
-
-
 def main():
-    hexagons = hexagons_from_colors_list(HEXAGON_COLORS_LIST)
-    game = Game(hexagons)
-    game.solve()
-
-    # Test hexagon placement.
-
-    # hexagon_colors = [
-    #     color.YELLOW, color.RED, color.BLUE,
-    #     color.BLUE, color.YELLOW, color.RED,
-    # ]
-    # hexagon = Hexagon(hexagon_colors)
-    # game.place_hexagon(hexagon, 6)
-
-
-    # Test hexagon switching.
-
-    # game.switch_hexagons(3, 5)
-
-
-    # Test hexagon rotation.
-
-    print(game.hexagon(2))
-    game.hexagon(2).rotate(3)
-    print(game.hexagon(2))
-    game.hexagon(2).rotate(1)
-    print(game.hexagon(2))
-    game.hexagon(2).rotate(2)
-    print(game.hexagon(2))
-
-
-    print("Game solved: %r" % game.is_solved())
-    print("Number of valid connections: %d" % game.number_of_valid_connections())
+    game = Game.game_from_list(HEXAGON_COLORS_LIST)
+    game_problem = GameProblem(game)
+    start = time.time()
+    # solution = search.breadth_first_search(game_problem).solution()
+    solution = search.astar_search(game_problem, game_problem.h).solution()
+    end = time.time()
+    print(solution)
+    print("Duration: %f" % (end - start))
     
 
 main()

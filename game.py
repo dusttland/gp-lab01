@@ -35,6 +35,17 @@ class Game:
 
         return string[1:]
 
+    def game_from_list(complete_list):
+        """Static factory method to get game instance from list."""
+        hexagons = Game.hexagons_from_complete_list(complete_list)
+        return Game(hexagons)
+
+    def game_from_tuple(complete_tuple):
+        """Static factory method to get game instance from tuple."""
+        complete_list = Game.list_from_tuple(complete_tuple)
+        hexagons = Game.hexagons_from_complete_list(complete_list)
+        return Game(hexagons)
+
 
     # Queries
 
@@ -151,6 +162,10 @@ class Game:
                 number_of_valid_connections += 1
         return number_of_valid_connections
 
+    def number_of_invalid_connections(self):
+        """Returns the number of invalid connections."""
+        return self.number_of_connections() - self.number_of_valid_connections()
+
     def valid_connections(self):
         """Returns all valid connections as a list."""
         connections = self.connections()
@@ -159,6 +174,42 @@ class Game:
             if self.is_valid_connection(connection):
                 valid_connections.append(connection)
         return valid_connections
+
+    def connection_heuristic(self):
+        """Returns the huristic score of current board. It counts all the 
+        connections siding all hexagons. Then subtracts the ones, that are 
+        valid. The more connections hexagon has, the more important it is."""
+        score = 0
+        number_of_hexagons = self.number_of_hexagons()
+
+        for hexagon_idx in range(0, number_of_hexagons):
+            hexagon_connections = self.connections_for_hexagon(hexagon_idx)
+            number_of_connections = len(hexagon_connections)
+
+            number_of_valid_connections = 0
+
+            for connection in hexagon_connections:
+                if self.is_valid_connection(connection):
+                    number_of_valid_connections = number_of_valid_connections + 1
+
+            this_score = number_of_connections - number_of_valid_connections
+
+            if number_of_connections == 6:
+                this_score = this_score * 22
+            elif number_of_connections == 4:
+                this_score = this_score * 10
+
+            score = score + this_score
+        return score
+
+    def connections_for_hexagon(self, hexagon_idx):
+        hexagon_connections = []
+        for connection in self.connections():
+            if connection[0][0] == hexagon_idx or connection[1][0] == hexagon_idx:
+                hexagon_connections.append(connection)
+        return hexagon_connections
+
+
         
 
     # Commands
@@ -175,15 +226,22 @@ class Game:
         self._hexagons[hexagon_index1] = self._hexagons[hexagon_index2]
         self._hexagons[hexagon_index2] = temp_hexagon
 
-    def solve(self):
-        """Solves the game according to current layout."""
-
-        # TODO
-        
-        print("Solving is not implemented yet...")
+    def as_tuple(self):
+        """Returns the game as one complete list containing colors of all 
+        hexagons."""
+        complete_list = []
+        for hexagon in self._hexagons:
+            complete_list.append(hexagon.as_list())
+        return Game.tuple_from_list(complete_list)
 
 
     # Utility
+
+    def hexagons_from_complete_list(colors_list):
+        hexagons = []
+        for colors in colors_list:
+            hexagons.append(Hexagon(colors))
+        return hexagons
 
     def valid_number_of_objects_in_triangle(number):
         depth = 0
@@ -211,3 +269,12 @@ class Game:
         for number in range(from_number, to_number):
             number_list.append(number)
         return number_list
+
+    def list_from_tuple(nested_tuple):
+        if isinstance(nested_tuple, (list, tuple)):
+            return list(map(Game.list_from_tuple, nested_tuple))
+        else:
+            return nested_tuple
+
+    def tuple_from_list(nested_list):
+        return tuple([tuple(l) for l in nested_list])

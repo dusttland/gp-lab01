@@ -29,6 +29,10 @@ class Hexagon:
         """Returns the color on a specified side."""
         return self._colors[index]
 
+    def as_list(self):
+        """Returns hexagon as list containing its colors."""
+        return self._colors
+
 
     # Commands
 
