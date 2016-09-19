@@ -5,6 +5,7 @@ import search
 
 import color
 from game import Game
+from game_problem import GameProblem
 from hexagon import Hexagon
 
 # ______________________________________________________________________________
@@ -40,78 +41,50 @@ HEXAGON_COLORS_LIST = [
         color.RED, color.BLUE, color.RED,
     ],
 
-    [ # 4th line
-        color.BLUE, color.BLUE, color.RED,
-        color.YELLOW, color.YELLOW, color.RED,
-    ],
-    [
-        color.BLUE, color.YELLOW, color.YELLOW,
-        color.BLUE, color.RED, color.RED,
-    ],
-    [
-        color.BLUE, color.BLUE, color.RED,
-        color.RED, color.YELLOW, color.YELLOW,
-    ],
-    [
-        color.YELLOW, color.RED, color.RED,
-        color.BLUE, color.BLUE, color.YELLOW,
-    ],
+    # [ # 4th line
+    #     color.BLUE, color.BLUE, color.RED,
+    #     color.YELLOW, color.YELLOW, color.RED,
+    # ],
+    # [
+    #     color.BLUE, color.YELLOW, color.YELLOW,
+    #     color.BLUE, color.RED, color.RED,
+    # ],
+    # [
+    #     color.BLUE, color.BLUE, color.RED,
+    #     color.RED, color.YELLOW, color.YELLOW,
+    # ],
+    # [
+    #     color.YELLOW, color.RED, color.RED,
+    #     color.BLUE, color.BLUE, color.YELLOW,
+    # ],
 
-    [ # 5th line
-        color.BLUE, color.BLUE, color.YELLOW,
-        color.GREEN, color.GREEN, color.YELLOW,
-    ],
-    [
-        color.YELLOW, color.RED, color.YELLOW,
-        color.BLUE, color.RED, color.BLUE,
-    ],
-    [
-        color.GREEN, color.RED, color.RED,
-        color.GREEN, color.YELLOW, color.YELLOW,
-    ],
-    [
-        color.GREEN, color.BLUE, color.BLUE,
-        color.YELLOW, color.YELLOW, color.GREEN,
-    ],
-    [
-        color.RED, color.BLUE, color.YELLOW,
-        color.YELLOW, color.RED, color.BLUE,
-    ],
+    # [ # 5th line
+    #     color.BLUE, color.BLUE, color.YELLOW,
+    #     color.GREEN, color.GREEN, color.YELLOW,
+    # ],
+    # [
+    #     color.YELLOW, color.RED, color.YELLOW,
+    #     color.BLUE, color.RED, color.BLUE,
+    # ],
+    # [
+    #     color.GREEN, color.RED, color.RED,
+    #     color.GREEN, color.YELLOW, color.YELLOW,
+    # ],
+    # [
+    #     color.GREEN, color.BLUE, color.BLUE,
+    #     color.YELLOW, color.YELLOW, color.GREEN,
+    # ],
+    # [
+    #     color.RED, color.BLUE, color.YELLOW,
+    #     color.YELLOW, color.RED, color.BLUE,
+    # ],
 ]
 
 
 def main():
-    game = Game.game_from_complete_list(HEXAGON_COLORS_LIST)
-    game.solve()
-
-    # Test hexagon placement.
-
-    # hexagon_colors = [
-    #     color.YELLOW, color.RED, color.BLUE,
-    #     color.BLUE, color.YELLOW, color.RED,
-    # ]
-    # hexagon = Hexagon(hexagon_colors)
-    # game.place_hexagon(hexagon, 6)
-
-
-    # Test hexagon switching.
-
-    # game.switch_hexagons(3, 5)
-
-
-    # Test hexagon rotation.
-
-    print(game.hexagon(2))
-    game.hexagon(2).rotate(3)
-    print(game.hexagon(2))
-    game.hexagon(2).rotate(1)
-    print(game.hexagon(2))
-    game.hexagon(2).rotate(2)
-    print(game.hexagon(2))
-
-
-    print("Game solved: %r" % game.is_solved())
-    print("Number of valid connections: %d" % game.number_of_valid_connections())
+    game_problem = GameProblem(HEXAGON_COLORS_LIST)
+    solution = search.astar_search(game_problem, game_problem.h).solution()
+    print(solution)
     
 
 main()

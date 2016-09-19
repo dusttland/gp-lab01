@@ -31,7 +31,7 @@ class Hexagon:
 
     def as_list(self):
         """Returns hexagon as list containing its colors."""
-        return self.colors
+        return self._colors
 
 
     # Commands

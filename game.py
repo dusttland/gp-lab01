@@ -188,16 +188,9 @@ class Game:
         """Returns the game as one complete list containing colors of all 
         hexagons."""
         complete_list = []
-        for hexagon in self.hexagos:
+        for hexagon in self._hexagons:
             complete_list.append(hexagon.as_list())
         return complete_list
-
-    def solve(self):
-        """Solves the game according to current layout."""
-
-        # TODO
-        
-        print("Solving is not implemented yet...")
 
 
     # Utility
