@@ -35,9 +35,15 @@ class Game:
 
         return string[1:]
 
-    def game_from_complete_list(complete_list):
-        """Static factory method to get game instance from complete list."""    
-        hexagons = Game.get_hexagons_from_complete_list(complete_list)
+    def game_from_list(complete_list):
+        """Static factory method to get game instance from list."""
+        hexagons = Game.hexagons_from_complete_list(complete_list)
+        return Game(hexagons)
+
+    def game_from_tuple(complete_tuple):
+        """Static factory method to get game instance from tuple."""
+        complete_list = Game.list_from_tuple(complete_tuple)
+        hexagons = Game.hexagons_from_complete_list(complete_list)
         return Game(hexagons)
 
 
@@ -184,18 +190,18 @@ class Game:
         self._hexagons[hexagon_index1] = self._hexagons[hexagon_index2]
         self._hexagons[hexagon_index2] = temp_hexagon
 
-    def as_complete_list(self):
+    def as_tuple(self):
         """Returns the game as one complete list containing colors of all 
         hexagons."""
         complete_list = []
         for hexagon in self._hexagons:
             complete_list.append(hexagon.as_list())
-        return complete_list
+        return Game.tuple_from_list(complete_list)
 
 
     # Utility
 
-    def get_hexagons_from_complete_list(colors_list):
+    def hexagons_from_complete_list(colors_list):
         hexagons = []
         for colors in colors_list:
             hexagons.append(Hexagon(colors))
@@ -227,3 +233,12 @@ class Game:
         for number in range(from_number, to_number):
             number_list.append(number)
         return number_list
+
+    def list_from_tuple(nested_tuple):
+        if isinstance(nested_tuple, (list, tuple)):
+            return list(map(Game.list_from_tuple, nested_tuple))
+        else:
+            return nested_tuple
+
+    def tuple_from_list(nested_list):
+        return tuple([tuple(l) for l in nested_list])

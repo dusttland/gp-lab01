@@ -10,16 +10,16 @@ from game import Game
 
 class GameProblem(Problem):
 
-    def __init__(self, initial):
-        self.initial = tuple_it(initial)
+    def __init__(self, game):
+        self.initial = game.as_tuple()
 
     def actions(self, state):
-        game = Game.game_from_complete_list(list_it(state))
+        game = Game.game_from_tuple(state)
         return GameProblem.get_all_possible_moves_as_list(game)
         
 
     def result(self, state, action):
-        game = Game.game_from_complete_list(list_it(state))
+        game = Game.game_from_tuple(state)
 
         if action[0] == "switch":
             game.switch_hexagons(action[1], action[2])
@@ -28,17 +28,15 @@ class GameProblem(Problem):
         else:
             print("Failed to choose action.")
 
-        return tuple_it(game.as_complete_list())
+        return game.as_tuple()
 
     def goal_test(self, state):
-        complete_list = list_it(state)
-        game = Game.game_from_complete_list(complete_list)
+        game = Game.game_from_tuple(state)
         return game.is_solved()
 
     def h(self, node):
         """Heuristic: the less invalid connections, the better."""
-        complete_list = list_it(node.state)
-        game = Game.game_from_complete_list(complete_list)
+        game = Game.game_from_tuple(node.state)
         return game.number_of_invalid_connections()
 
 
@@ -67,11 +65,3 @@ class GameProblem(Problem):
         for i in range(0, number_of_hexagons):
             rotate_moves.append(["rotate", i])
         return rotate_moves
-
-
-
-def tuple_it(nested_list):
-    return tuple([tuple(l) for l in nested_list])
-
-def list_it(nested_tuple):
-    return list(map(list_it, nested_tuple)) if isinstance(nested_tuple, (list, tuple)) else nested_tuple
