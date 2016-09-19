@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, 'aima-python-master')
 
 import search
+import time
 
 import color
 from game import Game
@@ -41,22 +42,22 @@ HEXAGON_COLORS_LIST = [
         color.RED, color.BLUE, color.RED,
     ],
 
-    # [ # 4th line
-    #     color.BLUE, color.BLUE, color.RED,
-    #     color.YELLOW, color.YELLOW, color.RED,
-    # ],
-    # [
-    #     color.BLUE, color.YELLOW, color.YELLOW,
-    #     color.BLUE, color.RED, color.RED,
-    # ],
-    # [
-    #     color.BLUE, color.BLUE, color.RED,
-    #     color.RED, color.YELLOW, color.YELLOW,
-    # ],
-    # [
-    #     color.YELLOW, color.RED, color.RED,
-    #     color.BLUE, color.BLUE, color.YELLOW,
-    # ],
+    [ # 4th line
+        color.BLUE, color.BLUE, color.RED,
+        color.YELLOW, color.YELLOW, color.RED,
+    ],
+    [
+        color.BLUE, color.YELLOW, color.YELLOW,
+        color.BLUE, color.RED, color.RED,
+    ],
+    [
+        color.BLUE, color.BLUE, color.RED,
+        color.RED, color.YELLOW, color.YELLOW,
+    ],
+    [
+        color.YELLOW, color.RED, color.RED,
+        color.BLUE, color.BLUE, color.YELLOW,
+    ],
 
     # [ # 5th line
     #     color.BLUE, color.BLUE, color.YELLOW,
@@ -84,8 +85,12 @@ HEXAGON_COLORS_LIST = [
 def main():
     game = Game.game_from_list(HEXAGON_COLORS_LIST)
     game_problem = GameProblem(game)
+    start = time.time()
+    # solution = search.breadth_first_search(game_problem).solution()
     solution = search.astar_search(game_problem, game_problem.h).solution()
+    end = time.time()
     print(solution)
+    print("Duration: %f" % (end - start))
     
 
 main()

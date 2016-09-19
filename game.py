@@ -174,6 +174,42 @@ class Game:
             if self.is_valid_connection(connection):
                 valid_connections.append(connection)
         return valid_connections
+
+    def connection_heuristic(self):
+        """Returns the huristic score of current board. It counts all the 
+        connections siding all hexagons. Then subtracts the ones, that are 
+        valid. The more connections hexagon has, the more important it is."""
+        score = 0
+        number_of_hexagons = self.number_of_hexagons()
+
+        for hexagon_idx in range(0, number_of_hexagons):
+            hexagon_connections = self.connections_for_hexagon(hexagon_idx)
+            number_of_connections = len(hexagon_connections)
+
+            number_of_valid_connections = 0
+
+            for connection in hexagon_connections:
+                if self.is_valid_connection(connection):
+                    number_of_valid_connections = number_of_valid_connections + 1
+
+            this_score = number_of_connections - number_of_valid_connections
+
+            if number_of_connections == 6:
+                this_score = this_score * 22
+            elif number_of_connections == 4:
+                this_score = this_score * 10
+
+            score = score + this_score
+        return score
+
+    def connections_for_hexagon(self, hexagon_idx):
+        hexagon_connections = []
+        for connection in self.connections():
+            if connection[0][0] == hexagon_idx or connection[1][0] == hexagon_idx:
+                hexagon_connections.append(connection)
+        return hexagon_connections
+
+
         
 
     # Commands

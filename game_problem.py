@@ -21,12 +21,18 @@ class GameProblem(Problem):
     def result(self, state, action):
         game = Game.game_from_tuple(state)
 
+        before = game.connection_heuristic()
+
         if action[0] == "switch":
             game.switch_hexagons(action[1], action[2])
         elif action[0] == "rotate":
-            game.hexagon(action[1]).rotate(1)
+            game.hexagon(action[1]).rotate(action[2])
         else:
             print("Failed to choose action.")
+
+        after = game.connection_heuristic()
+
+        print("%d -> %d" % (before, after))
 
         return game.as_tuple()
 
@@ -37,15 +43,15 @@ class GameProblem(Problem):
     def h(self, node):
         """Heuristic: the less invalid connections, the better."""
         game = Game.game_from_tuple(node.state)
-        return game.number_of_invalid_connections()
+        return game.connection_heuristic()
 
 
     # Static methods
 
     def get_all_possible_moves_as_list(game):
         moves_list = []
-        moves_list.extend(GameProblem.get_all_switch_moves(game))
         moves_list.extend(GameProblem.get_all_rotate_moves(game))
+        moves_list.extend(GameProblem.get_all_switch_moves(game))
         return moves_list
 
     def get_all_switch_moves(game):
@@ -59,9 +65,10 @@ class GameProblem(Problem):
         return switch_moves
 
     def get_all_rotate_moves(game):
-        """Rotate every hexagon once."""
+        """Rotate every rotatation move."""
         rotate_moves = []
         number_of_hexagons = game.number_of_hexagons()
         for i in range(0, number_of_hexagons):
-            rotate_moves.append(["rotate", i])
+            for j in range(1, 6):
+                rotate_moves.append(["rotate", i, j])
         return rotate_moves
