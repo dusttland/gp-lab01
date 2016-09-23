@@ -83,7 +83,7 @@ HEXAGON_COLORS_LIST = [
 
 
 def main():
-    game = Game.game_from_list(HEXAGON_COLORS_LIST)
+    game = Game.from_list(HEXAGON_COLORS_LIST)
     game_problem = GameProblem(game)
     start = time.time()
     # solution = search.breadth_first_search(game_problem).solution()

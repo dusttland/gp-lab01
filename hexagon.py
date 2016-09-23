@@ -22,6 +22,10 @@ class Hexagon:
     def __str__(self):
         return "%s" % self._colors
 
+    def from_tuple(colors):
+        """Static factory method to get a hexagon from a tuple."""
+        return Hexagon(list(colors))
+
 
     # Queries
 
@@ -32,6 +36,10 @@ class Hexagon:
     def as_list(self):
         """Returns hexagon as list containing its colors."""
         return self._colors
+
+    def as_tuple(self):
+        """Returns hexagon as a tuple."""
+        return tuple(self._colors)
 
 
     # Commands
