@@ -1,3 +1,5 @@
+import copy
+
 from hexagon import Hexagon
 
 # ______________________________________________________________________________
@@ -42,8 +44,17 @@ class Game:
 
     def game_from_tuple(complete_tuple):
         """Static factory method to get game instance from tuple."""
-        complete_list = Game.list_from_tuple(complete_tuple)
-        hexagons = Game.hexagons_from_complete_list(complete_list)
+        i = 0
+        hexagons = []
+        temp_colors = []
+        for color in complete_tuple:
+            i = i+1
+            temp_colors.append(color)
+            if i == 6:
+                hexagon = Hexagon(copy.copy(temp_colors))
+                hexagons.append(hexagon)
+                i = 0
+                temp_colors = []
         return Game(hexagons)
 
 
@@ -175,7 +186,7 @@ class Game:
                 valid_connections.append(connection)
         return valid_connections
 
-    def connection_heuristic(self):
+    def heuristic(self):
         """Returns the huristic score of current board. It counts all the 
         connections siding all hexagons. Then subtracts the ones, that are 
         valid. The more connections hexagon has, the more important it is."""
@@ -195,9 +206,9 @@ class Game:
             this_score = number_of_connections - number_of_valid_connections
 
             if number_of_connections == 6:
-                this_score = this_score * 22
+                this_score = this_score * 16
             elif number_of_connections == 4:
-                this_score = this_score * 10
+                this_score = this_score * 4
 
             score = score + this_score
         return score
@@ -209,7 +220,13 @@ class Game:
                 hexagon_connections.append(connection)
         return hexagon_connections
 
-
+    def as_tuple(self):
+        """Returns the game as one complete list containing colors of all 
+        hexagons."""
+        complete_tuple = ()
+        for hexagon in self._hexagons:
+            complete_tuple = complete_tuple + hexagon.as_tuple()
+        return complete_tuple
         
 
     # Commands
@@ -225,14 +242,6 @@ class Game:
         temp_hexagon = self._hexagons[hexagon_index1]
         self._hexagons[hexagon_index1] = self._hexagons[hexagon_index2]
         self._hexagons[hexagon_index2] = temp_hexagon
-
-    def as_tuple(self):
-        """Returns the game as one complete list containing colors of all 
-        hexagons."""
-        complete_list = []
-        for hexagon in self._hexagons:
-            complete_list.append(hexagon.as_list())
-        return Game.tuple_from_list(complete_list)
 
 
     # Utility
@@ -269,12 +278,3 @@ class Game:
         for number in range(from_number, to_number):
             number_list.append(number)
         return number_list
-
-    def list_from_tuple(nested_tuple):
-        if isinstance(nested_tuple, (list, tuple)):
-            return list(map(Game.list_from_tuple, nested_tuple))
-        else:
-            return nested_tuple
-
-    def tuple_from_list(nested_list):
-        return tuple([tuple(l) for l in nested_list])

@@ -33,6 +33,10 @@ class Hexagon:
         """Returns hexagon as list containing its colors."""
         return self._colors
 
+    def as_tuple(self):
+        """Returns hexagon as a tuple."""
+        return tuple(self._colors)
+
 
     # Commands
 

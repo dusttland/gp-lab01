@@ -21,18 +21,12 @@ class GameProblem(Problem):
     def result(self, state, action):
         game = Game.game_from_tuple(state)
 
-        before = game.connection_heuristic()
-
         if action[0] == "switch":
             game.switch_hexagons(action[1], action[2])
         elif action[0] == "rotate":
             game.hexagon(action[1]).rotate(action[2])
         else:
             print("Failed to choose action.")
-
-        after = game.connection_heuristic()
-
-        print("%d -> %d" % (before, after))
 
         return game.as_tuple()
 
@@ -43,7 +37,7 @@ class GameProblem(Problem):
     def h(self, node):
         """Heuristic: the less invalid connections, the better."""
         game = Game.game_from_tuple(node.state)
-        return game.connection_heuristic()
+        return game.heuristic()
 
 
     # Static methods
