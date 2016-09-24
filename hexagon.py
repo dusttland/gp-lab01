@@ -19,6 +19,11 @@ class Hexagon:
         else:
             raise ValueError("Not a valid hexagon.")
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self._colors == other._colors
+        return False
+
     def __str__(self):
         return "%s" % self._colors
 
