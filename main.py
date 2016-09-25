@@ -5,6 +5,7 @@ import search
 import time
 
 import color
+from empty_game_problem import EmptyGameProblem
 from game import Game
 from game_problem import GameProblem
 from hexagon import Hexagon
@@ -81,15 +82,22 @@ HEXAGON_COLORS_LIST = [
     ],
 ]
 
+def get_hexagons(colors_list):
+    hexagons = []
+    for colors in colors_list:
+        hexagons.append(Hexagon(colors))
+    return hexagons
 
 def main():
-    game = Game.from_list(HEXAGON_COLORS_LIST)
-    game_problem = GameProblem(game)
+    hexagons = get_hexagons(HEXAGON_COLORS_LIST)
+    empty_game_problem = EmptyGameProblem(hexagons)
     start = time.time()
-    # solution = search.breadth_first_search(game_problem).solution()
-    solution = search.astar_search(game_problem, game_problem.h).solution()
+    state = search.hill_climbing(empty_game_problem)
+    game = Game.from_tuple(state)
+    game_problem = GameProblem(game)
+    node = search.astar_search(game_problem, game_problem.h)
     end = time.time()
-    print(solution)
+    print(node.state)
     print("Duration: %f" % (end - start))
     
 
