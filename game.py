@@ -19,7 +19,7 @@ class Game:
         number_of_hexagons = len(hexagons)
         if not Game.valid_number_of_objects_in_triangle(number_of_hexagons):
             raise ValueError("Invalid number of hexagons.")
-        self._hexagons = hexagons
+        self._hexagons = tuple(hexagons)
 
     def __str__(self):
         string = ""
@@ -35,15 +35,16 @@ class Game:
 
         return string[1:]
 
-    def game_from_list(complete_list):
+    def from_list(complete_list):
         """Static factory method to get game instance from list."""
         hexagons = Game.hexagons_from_complete_list(complete_list)
         return Game(hexagons)
 
-    def game_from_tuple(complete_tuple):
+    def from_tuple(complete_tuple):
         """Static factory method to get game instance from tuple."""
-        complete_list = Game.list_from_tuple(complete_tuple)
-        hexagons = Game.hexagons_from_complete_list(complete_list)
+        hexagons = []
+        for colors in complete_tuple:
+            hexagons.append(Hexagon(colors))
         return Game(hexagons)
 
 
@@ -175,7 +176,7 @@ class Game:
                 valid_connections.append(connection)
         return valid_connections
 
-    def connection_heuristic(self):
+    def heuristic(self):
         """Returns the huristic score of current board. It counts all the 
         connections siding all hexagons. Then subtracts the ones, that are 
         valid. The more connections hexagon has, the more important it is."""
@@ -203,12 +204,20 @@ class Game:
         return score
 
     def connections_for_hexagon(self, hexagon_idx):
+        """Returns the connections of only the chosen hexagon."""
         hexagon_connections = []
         for connection in self.connections():
             if connection[0][0] == hexagon_idx or connection[1][0] == hexagon_idx:
                 hexagon_connections.append(connection)
         return hexagon_connections
 
+    def as_tuple(self):
+        """Returns the game as one complete tuple containing colors of all 
+        hexagons."""
+        tuple_list = []
+        for hexagon in self._hexagons:
+            tuple_list.append(hexagon.as_tuple())
+        return tuple(tuple_list)
 
         
 
@@ -217,22 +226,18 @@ class Game:
     def place_hexagon(self, hexagon, hexagon_index):
         """Places a new hexagon to the given location. If a hexagon exists
         in the indexed position, it will be replaced by the new one."""
-        self._hexagons[hexagon_index] = hexagon
+        hexagon_list = list(self._hexagons)
+        hexagon_list[hexagon_index] = hexagon
+        self._hexagons = tuple(hexagon_list)
 
     def switch_hexagons(self, hexagon_index1, hexagon_index2):
         """Switch hexagons' positions with each other. Inputs are hexagon 
         indexes."""
         temp_hexagon = self._hexagons[hexagon_index1]
-        self._hexagons[hexagon_index1] = self._hexagons[hexagon_index2]
-        self._hexagons[hexagon_index2] = temp_hexagon
-
-    def as_tuple(self):
-        """Returns the game as one complete list containing colors of all 
-        hexagons."""
-        complete_list = []
-        for hexagon in self._hexagons:
-            complete_list.append(hexagon.as_list())
-        return Game.tuple_from_list(complete_list)
+        hexagon_list = list(self._hexagons)
+        hexagon_list[hexagon_index1] = self._hexagons[hexagon_index2]
+        hexagon_list[hexagon_index2] = temp_hexagon
+        self._hexagons = tuple(hexagon_list)
 
 
     # Utility
@@ -269,12 +274,3 @@ class Game:
         for number in range(from_number, to_number):
             number_list.append(number)
         return number_list
-
-    def list_from_tuple(nested_tuple):
-        if isinstance(nested_tuple, (list, tuple)):
-            return list(map(Game.list_from_tuple, nested_tuple))
-        else:
-            return nested_tuple
-
-    def tuple_from_list(nested_list):
-        return tuple([tuple(l) for l in nested_list])

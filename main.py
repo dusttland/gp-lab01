@@ -59,31 +59,31 @@ HEXAGON_COLORS_LIST = [
         color.BLUE, color.BLUE, color.YELLOW,
     ],
 
-    # [ # 5th line
-    #     color.BLUE, color.BLUE, color.YELLOW,
-    #     color.GREEN, color.GREEN, color.YELLOW,
-    # ],
-    # [
-    #     color.YELLOW, color.RED, color.YELLOW,
-    #     color.BLUE, color.RED, color.BLUE,
-    # ],
-    # [
-    #     color.GREEN, color.RED, color.RED,
-    #     color.GREEN, color.YELLOW, color.YELLOW,
-    # ],
-    # [
-    #     color.GREEN, color.BLUE, color.BLUE,
-    #     color.YELLOW, color.YELLOW, color.GREEN,
-    # ],
-    # [
-    #     color.RED, color.BLUE, color.YELLOW,
-    #     color.YELLOW, color.RED, color.BLUE,
-    # ],
+    [ # 5th line
+        color.BLUE, color.BLUE, color.YELLOW,
+        color.GREEN, color.GREEN, color.YELLOW,
+    ],
+    [
+        color.YELLOW, color.RED, color.YELLOW,
+        color.BLUE, color.RED, color.BLUE,
+    ],
+    [
+        color.GREEN, color.RED, color.RED,
+        color.GREEN, color.YELLOW, color.YELLOW,
+    ],
+    [
+        color.GREEN, color.BLUE, color.BLUE,
+        color.YELLOW, color.YELLOW, color.GREEN,
+    ],
+    [
+        color.RED, color.BLUE, color.YELLOW,
+        color.YELLOW, color.RED, color.BLUE,
+    ],
 ]
 
 
 def main():
-    game = Game.game_from_list(HEXAGON_COLORS_LIST)
+    game = Game.from_list(HEXAGON_COLORS_LIST)
     game_problem = GameProblem(game)
     start = time.time()
     # solution = search.breadth_first_search(game_problem).solution()
