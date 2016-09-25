@@ -19,8 +19,13 @@ class Game:
 
     def __init__(self, hexagons):
         number_of_hexagons = len(hexagons)
+
         if not Game.valid_number_of_objects_in_triangle(number_of_hexagons):
             raise ValueError("Invalid number of hexagons.")
+
+        if not Game.are_all_hexagons_unique(hexagons):
+            raise ValueError("All hexagons are not unique.")
+
         self._hexagons = tuple(hexagons)
 
     def __str__(self):
@@ -37,15 +42,11 @@ class Game:
 
         return string[1:]
 
-    def from_list(complete_list):
-        """Static factory method to get game instance from list."""
-        hexagons = Game.hexagons_from_complete_list(complete_list)
-        return Game(hexagons)
-
-    def from_tuple(complete_tuple):
-        """Static factory method to get game instance from tuple."""
+    def from_collection(collection):
+        """Static factory method to get game instance from complete 
+        collection."""
         hexagons = []
-        for colors in complete_tuple:
+        for colors in collection:
             if colors != None:
                 hexagons.append(Hexagon(colors))
             else:
@@ -281,6 +282,17 @@ class Game:
                 tuple_list.append(None)                
         return tuple(tuple_list)
 
+    def as_list(self):
+        """Returns the game as one complete list containig colors of all 
+        hexagons."""
+        complete_list = []
+        for hexagon in self._hexagons:
+            if hexagon != None:
+                complete_list.append(hexagon.as_list())
+            else:
+                complete_list.append(None)
+        return complete_list
+
     def hexagon_exists(self, hexagon):
         """Tests if hexagon already exists in the game."""
         number_of_hexagons = self.number_of_hexagons()
@@ -346,3 +358,16 @@ class Game:
         for number in range(from_number, to_number):
             number_list.append(number)
         return number_list
+
+    def are_all_hexagons_unique(hexagons):
+        number_of_hexagons = len(hexagons)
+        for i in range(0, number_of_hexagons):
+            for j in range(0, number_of_hexagons):
+                if (
+                    i != j and
+                    hexagons[i] != None and
+                    hexagons[j] != None and 
+                    hexagons[i] == hexagons[j]
+                ):
+                    return False
+        return True

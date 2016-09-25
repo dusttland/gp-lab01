@@ -49,10 +49,58 @@ class HexagonTest(unittest.TestCase):
 class GameTest(unittest.TestCase):
 
     def setUp(self):
-        self.game_15 = Game.from_list(HEXAGON_COLORS_LIST_15)
-        self.game_10 = Game.from_list(HEXAGON_COLORS_LIST_10)
-        self.game_solved = Game.from_tuple(HEXAGON_COLORS_TUPLE_SOLVED)
-        self.game_empty = Game.from_tuple(GAME_EMPTY)
+        self.game_15 = Game.from_collection(HEXAGON_COLORS_LIST_15)
+        self.game_10 = Game.from_collection(HEXAGON_COLORS_LIST_10)
+        self.game_solved = Game.from_collection(HEXAGON_COLORS_TUPLE_SOLVED)
+        self.game_empty = Game.from_collection(GAME_EMPTY)
+        self.game_1 = Game.from_collection([['g', 'g', 'r', 'b', 'r', 'b']])
+
+    def test_from_collection(self):
+        game_15 = Game.from_collection(HEXAGON_COLORS_LIST_15)
+        game_10 = Game.from_collection(HEXAGON_COLORS_LIST_10)
+        self.assertEqual(HEXAGON_COLORS_LIST_15, game_15.as_list())
+        self.assertEqual(HEXAGON_COLORS_LIST_10, game_10.as_list())
+        
+        game_tuple_15 = Game.from_collection(HEXAGON_COLORS_TUPLE_15)
+        self.assertEqual(HEXAGON_COLORS_TUPLE_15, game_15.as_tuple())
+
+        TUPLE_LIST = [
+            ('r', 'y', 'b', 'y', 'r', 'b'), 
+            ('r', 'r', 'b', 'b', 'y', 'y'), 
+            ('r', 'g', 'b', 'g', 'r', 'b'),
+        ]
+
+        LIST_TUPLE = (
+            ['r', 'y', 'b', 'y', 'r', 'b'], 
+            ['r', 'r', 'b', 'b', 'y', 'y'], 
+            ['r', 'g', 'b', 'g', 'r', 'b'],
+        )
+
+        try:
+            Game.from_collection(TUPLE_LIST)
+        except Exception:
+            self.fail("Could not make game from tuple-list.")
+
+        try:
+            Game.from_collection(LIST_TUPLE)
+        except Exception:
+            self.fail("Could not make game from list-tuple.")
+
+        with self.assertRaises(ValueError):
+            Game.from_collection([[], [], []])
+
+        with self.assertRaises(ValueError):
+            Game.from_collection([
+                ['r', 'y', 'b', 'y', 'r', 'b'], 
+                ['r', 'r', 'b', 'b', 'y', 'y'],
+            ])     
+
+        with self.assertRaises(ValueError):
+            Game.from_collection([
+                ['r', 'y', 'b', 'y', 'r', 'b'], 
+                ['r', 'y', 'b', 'y', 'r', 'b'], 
+                ['r', 'y', 'b', 'y', 'r', 'b'], 
+            ])    
 
     def test_as_tuple(self):
         self.assertEqual(HEXAGON_COLORS_TUPLE_15, self.game_15.as_tuple())
@@ -70,27 +118,32 @@ class GameTest(unittest.TestCase):
         self.assertEqual(15, self.game_15.number_of_hexagons())
         self.assertEqual(10, self.game_10.number_of_hexagons())
         self.assertEqual(15, self.game_empty.number_of_hexagons())
+        self.assertEqual(1, self.game_1.number_of_hexagons())
 
     def test_is_solved(self):
         self.assertTrue(self.game_solved.is_solved())
         self.assertFalse(self.game_15.is_solved())
         self.assertFalse(self.game_10.is_solved())
         self.assertFalse(self.game_empty.is_solved())
+        self.assertTrue(self.game_1.is_solved())
 
     def test_number_of_connections(self):
         self.assertEqual(30, self.game_15.number_of_connections())
         self.assertEqual(18, self.game_10.number_of_connections())
-        self.assertEqual(30, self.game_15.number_of_connections())
+        self.assertEqual(30, self.game_empty.number_of_connections())
+        self.assertEqual(0, self.game_1.number_of_connections())
 
     def test_depth(self):
         self.assertEqual(5, self.game_15.depth())
         self.assertEqual(4, self.game_10.depth())
         self.assertEqual(5, self.game_empty.depth())
+        self.assertEqual(1, self.game_1.depth())
 
     def test_connections(self):
         self.assertEqual(CONNECTIONS_15, self.game_15.connections())
         self.assertEqual(CONNECTIONS_10, self.game_10.connections())
         self.assertEqual(CONNECTIONS_15, self.game_empty.connections())
+        self.assertEqual([], self.game_1.connections())
 
     def test_colors_in_connection(self):
         connection = [
@@ -149,6 +202,8 @@ class GameTest(unittest.TestCase):
             self.game_empty.connections_for_hexagon(2)
         )
 
+        self.assertEqual([], self.game_1.connections_for_hexagon(0))
+
     def test_hexagon_exists(self):
         hexagon = self.game_15.hexagon(13)
         self.assertFalse(self.game_10.hexagon_exists(hexagon))
@@ -186,12 +241,14 @@ class GameTest(unittest.TestCase):
         self.assertEqual(sys.maxsize, self.game_empty.heuristic())
         self.assertEqual(272, self.game_10.heuristic())
         self.assertEqual(0, self.game_solved.heuristic())
+        self.assertEqual(0, self.game_1.heuristic())
 
     def test_value(self):
         self.assertEqual(183, self.game_15.value())
         self.assertEqual(-15, self.game_empty.value())
         self.assertEqual(106, self.game_10.value())
         self.assertEqual(378, self.game_solved.value())
+        self.assertEqual(0, self.game_1.value())
 
 # ______________________________________________________________________________    
 

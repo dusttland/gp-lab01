@@ -93,7 +93,7 @@ def main():
     empty_game_problem = EmptyGameProblem(hexagons)
     start = time.time()
     state = search.hill_climbing(empty_game_problem)
-    game = Game.from_tuple(state)
+    game = Game.from_collection(state)
     game_problem = GameProblem(game)
     node = search.astar_search(game_problem, game_problem.h)
     end = time.time()

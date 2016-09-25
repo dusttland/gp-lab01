@@ -16,11 +16,11 @@ class EmptyGameProblem(Problem):
         self.initial = game.as_tuple()
 
     def actions(self, state):
-        game = Game.from_tuple(state)
+        game = Game.from_collection(state)
         return self.get_all_moves(game)
 
     def result(self, state, action):
-        game = Game.from_tuple(state)
+        game = Game.from_collection(state)
 
         if action[0] == "place":
             hexagon_index = action[1]
@@ -34,14 +34,14 @@ class EmptyGameProblem(Problem):
         return game.as_tuple()
 
     def goal_test(self, state):
-        return Game.from_tuple(state).is_solved()
+        return Game.from_collection(state).is_solved()
 
     def value(self, state):
-        return Game.from_tuple(state).value()
+        return Game.from_collection(state).value()
 
     def h(self, node):
         """Heuristic: the less invalid connections, the better."""
-        return Game.from_tuple(node.state).heuristic()
+        return Game.from_collection(node.state).heuristic()
 
 
     # Static methods
