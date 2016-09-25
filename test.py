@@ -1,3 +1,4 @@
+import sys
 import unittest
 
 import color
@@ -170,12 +171,12 @@ class GameTest(unittest.TestCase):
 
     def test_heuristic(self):
         self.assertEqual(579, self.game_15.heuristic())
-        self.assertEqual(762, self.game_empty.heuristic())
+        self.assertEqual(sys.maxsize, self.game_empty.heuristic())
         self.assertEqual(272, self.game_10.heuristic())
 
     def test_value(self):
         self.assertEqual(183, self.game_15.value())
-        self.assertEqual(0, self.game_empty.value())
+        self.assertEqual(-15, self.game_empty.value())
         self.assertEqual(106, self.game_10.value())
 
 # ______________________________________________________________________________    
