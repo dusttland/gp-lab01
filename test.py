@@ -149,6 +149,12 @@ class GameTest(unittest.TestCase):
             self.game_empty.connections_for_hexagon(2)
         )
 
+    def test_hexagon_exists(self):
+        hexagon = self.game_15.hexagon(13)
+        self.assertFalse(self.game_10.hexagon_exists(hexagon))
+        self.assertFalse(self.game_empty.hexagon_exists(hexagon))
+        self.assertTrue(self.game_15.hexagon_exists(hexagon))
+
     def test_place_hexagon(self):
         hexagon = Hexagon(['r', 'g', 'g', 'y', 'r', 'y'])
         self.game_15.place_hexagon(hexagon, 5)
@@ -156,6 +162,12 @@ class GameTest(unittest.TestCase):
 
         self.game_empty.place_hexagon(hexagon, 10)
         self.assertEqual(hexagon, self.game_empty.hexagon(10))
+
+        hexagon2 =  self.game_15.hexagon(13)
+
+        with self.assertRaises(ValueError):
+            self.game_15.place_hexagon(hexagon2, 10)
+        
 
     def test_switch_hexagons(self):
         hexagon1 = self.game_15.hexagon(8)
@@ -173,11 +185,13 @@ class GameTest(unittest.TestCase):
         self.assertEqual(579, self.game_15.heuristic())
         self.assertEqual(sys.maxsize, self.game_empty.heuristic())
         self.assertEqual(272, self.game_10.heuristic())
+        self.assertEqual(0, self.game_solved.heuristic())
 
     def test_value(self):
         self.assertEqual(183, self.game_15.value())
         self.assertEqual(-15, self.game_empty.value())
         self.assertEqual(106, self.game_10.value())
+        self.assertEqual(378, self.game_solved.value())
 
 # ______________________________________________________________________________    
 

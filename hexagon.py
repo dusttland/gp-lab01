@@ -20,6 +20,8 @@ class Hexagon:
             raise ValueError("Not a valid hexagon.")
 
     def __eq__(self, other):
+        """Tests if hexagons are equal. The function turns around itself as 
+        many times as it can and compares it to the other."""
         is_same = False
         if isinstance(other, self.__class__):
             for i in range(0, 6):

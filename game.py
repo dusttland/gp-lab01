@@ -281,13 +281,23 @@ class Game:
                 tuple_list.append(None)                
         return tuple(tuple_list)
 
-        
+    def hexagon_exists(self, hexagon):
+        """Tests if hexagon already exists in the game."""
+        number_of_hexagons = self.number_of_hexagons()
+        for existing_hexagon in self._hexagons:
+            if hexagon == existing_hexagon:
+                return True
+        return False
+
 
     # Commands
 
     def place_hexagon(self, hexagon, hexagon_index):
         """Places a new hexagon to the given location. If a hexagon exists
         in the indexed position, it will be replaced by the new one."""
+        if self.hexagon_exists(hexagon):
+            raise ValueError("Hexagon already exists in the game.")
+
         hexagon_list = list(self._hexagons)
         hexagon_list[hexagon_index] = hexagon
         self._hexagons = tuple(hexagon_list)
