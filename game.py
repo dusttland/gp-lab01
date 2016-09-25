@@ -19,7 +19,7 @@ class Game:
         number_of_hexagons = len(hexagons)
         if not Game.valid_number_of_objects_in_triangle(number_of_hexagons):
             raise ValueError("Invalid number of hexagons.")
-        self._hexagons = hexagons
+        self._hexagons = tuple(hexagons)
 
     def __str__(self):
         string = ""
@@ -44,7 +44,7 @@ class Game:
         """Static factory method to get game instance from tuple."""
         hexagons = []
         for colors in complete_tuple:
-            hexagons.append(Hexagon.from_tuple(colors))
+            hexagons.append(Hexagon(colors))
         return Game(hexagons)
 
 
@@ -196,7 +196,7 @@ class Game:
             this_score = number_of_connections - number_of_valid_connections
 
             if number_of_connections == 6:
-                this_score = this_score * 44
+                this_score = this_score * 22
             elif number_of_connections == 4:
                 this_score = this_score * 10
 
@@ -204,6 +204,7 @@ class Game:
         return score
 
     def connections_for_hexagon(self, hexagon_idx):
+        """Returns the connections of only the chosen hexagon."""
         hexagon_connections = []
         for connection in self.connections():
             if connection[0][0] == hexagon_idx or connection[1][0] == hexagon_idx:
@@ -225,14 +226,18 @@ class Game:
     def place_hexagon(self, hexagon, hexagon_index):
         """Places a new hexagon to the given location. If a hexagon exists
         in the indexed position, it will be replaced by the new one."""
-        self._hexagons[hexagon_index] = hexagon
+        hexagon_list = list(self._hexagons)
+        hexagon_list[hexagon_index] = hexagon
+        self._hexagons = tuple(hexagon_list)
 
     def switch_hexagons(self, hexagon_index1, hexagon_index2):
         """Switch hexagons' positions with each other. Inputs are hexagon 
         indexes."""
         temp_hexagon = self._hexagons[hexagon_index1]
-        self._hexagons[hexagon_index1] = self._hexagons[hexagon_index2]
-        self._hexagons[hexagon_index2] = temp_hexagon
+        hexagon_list = list(self._hexagons)
+        hexagon_list[hexagon_index1] = self._hexagons[hexagon_index2]
+        hexagon_list[hexagon_index2] = temp_hexagon
+        self._hexagons = tuple(hexagon_list)
 
 
     # Utility

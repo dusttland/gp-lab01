@@ -15,7 +15,7 @@ class Hexagon:
 
     def __init__(self, colors):
         if len(colors) == 6:
-            self._colors = colors
+            self._colors = tuple(colors)
         else:
             raise ValueError("Not a valid hexagon.")
 
@@ -25,11 +25,7 @@ class Hexagon:
         return False
 
     def __str__(self):
-        return "%s" % self._colors
-
-    def from_tuple(colors):
-        """Static factory method to get a hexagon from a tuple."""
-        return Hexagon(list(colors))
+        return "%s" % str(self._colors)
 
 
     # Queries
@@ -40,11 +36,11 @@ class Hexagon:
 
     def as_list(self):
         """Returns hexagon as list containing its colors."""
-        return self._colors
+        return list(self._colors)
 
     def as_tuple(self):
         """Returns hexagon as a tuple."""
-        return tuple(self._colors)
+        return self._colors
 
 
     # Commands
