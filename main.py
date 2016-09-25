@@ -88,7 +88,10 @@ def get_hexagons(colors_list):
         hexagons.append(Hexagon(colors))
     return hexagons
 
-def main():
+def hill_climb_and_astar():
+    """Looks like starting with an empty board and then doing
+    astar does not work..."""
+    print("Hill climbing and A*: \n")
     hexagons = get_hexagons(HEXAGON_COLORS_LIST)
     empty_game_problem = EmptyGameProblem(hexagons)
     start = time.time()
@@ -99,6 +102,22 @@ def main():
     end = time.time()
     print(node.state)
     print("Duration: %f" % (end - start))
+
+def astar():
+    """This is the fastest so far."""
+    print("A*: \n")
+    game = Game.from_collection(HEXAGON_COLORS_LIST)
+    game_problem = GameProblem(game)
+    start = time.time()
+    node = search.astar_search(game_problem, game_problem.h)
+    end = time.time()
+    print(node.state)
+    print("Duration: %f" % (end - start))
+
+
+def main():
+    # hill_climb_and_astar()
+    astar()
     
 
 main()
