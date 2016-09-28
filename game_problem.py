@@ -11,6 +11,9 @@ from game import Game
 class GameProblem(Problem):
 
     def __init__(self, game):
+        if not game.is_valid():
+            raise ValueError("Game is not valid.")
+
         self.initial = game.as_tuple()
         self.all_moves = GameProblem.get_all_possible_moves_as_list(game)
 

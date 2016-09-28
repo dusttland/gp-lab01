@@ -62,7 +62,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(HEXAGON_COLORS_LIST_10, game_10.as_list())
         
         game_tuple_15 = Game.from_collection(HEXAGON_COLORS_TUPLE_15)
-        self.assertEqual(HEXAGON_COLORS_TUPLE_15, game_15.as_tuple())
+        self.assertEqual(HEXAGON_COLORS_TUPLE_15, game_15.as_tuple()) 
 
         TUPLE_LIST = [
             ('r', 'y', 'b', 'y', 'r', 'b'), 
@@ -84,23 +84,10 @@ class GameTest(unittest.TestCase):
         try:
             Game.from_collection(LIST_TUPLE)
         except Exception:
-            self.fail("Could not make game from list-tuple.")
+            self.fail("Could not make game from list-tuple.") 
 
         with self.assertRaises(ValueError):
-            Game.from_collection([[], [], []])
-
-        with self.assertRaises(ValueError):
-            Game.from_collection([
-                ['r', 'y', 'b', 'y', 'r', 'b'], 
-                ['r', 'r', 'b', 'b', 'y', 'y'],
-            ])     
-
-        with self.assertRaises(ValueError):
-            Game.from_collection([
-                ['r', 'y', 'b', 'y', 'r', 'b'], 
-                ['r', 'y', 'b', 'y', 'r', 'b'], 
-                ['r', 'y', 'b', 'y', 'r', 'b'], 
-            ])    
+            Game.from_collection([[], [], []]) 
 
     def test_as_tuple(self):
         self.assertEqual(HEXAGON_COLORS_TUPLE_15, self.game_15.as_tuple())
@@ -249,6 +236,26 @@ class GameTest(unittest.TestCase):
         self.assertEqual(106, self.game_10.value())
         self.assertEqual(378, self.game_solved.value())
         self.assertEqual(0, self.game_1.value())
+
+    def test_is_valid(self):
+        self.assertTrue(self.game_15.is_valid())
+        self.assertTrue(self.game_10.is_valid())
+        self.assertTrue(self.game_empty.is_valid())
+        self.assertTrue(self.game_1.is_valid())
+
+        game = Game.from_collection([
+            ['r', 'y', 'b', 'y', 'r', 'b'], 
+            ['r', 'r', 'b', 'b', 'y', 'y'],
+        ])   
+        self.assertFalse(game.is_valid())
+
+        game = Game.from_collection([
+            ['r', 'y', 'b', 'y', 'r', 'b'], 
+            ['r', 'y', 'b', 'y', 'r', 'b'], 
+            ['r', 'y', 'b', 'y', 'r', 'b'], 
+        ]) 
+        self.assertFalse(game.is_valid())
+            
 
 # ______________________________________________________________________________    
 

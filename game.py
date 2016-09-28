@@ -18,15 +18,6 @@ class Game:
     """
 
     def __init__(self, hexagons):
-        number_of_hexagons = len(hexagons)
-
-        if not Game.valid_number_of_objects_in_triangle(number_of_hexagons):
-            raise ValueError("Invalid number of hexagons.")
-
-        # If this is not called, algorithms work much faster.
-        if not Game.are_all_hexagons_unique(hexagons):
-            raise ValueError("All hexagons are not unique.")
-
         self._hexagons = tuple(hexagons)
 
     def __str__(self):
@@ -302,6 +293,16 @@ class Game:
                 return True
         return False
 
+    def is_valid(self):
+        number_of_hexagons = self.number_of_hexagons()
+        if not Game.valid_number_of_objects_in_triangle(number_of_hexagons):
+            return False
+
+        if not Game.are_all_hexagons_unique(self._hexagons):
+            return False
+
+        return True
+
 
     # Commands
 
@@ -363,7 +364,7 @@ class Game:
     def are_all_hexagons_unique(hexagons):
         number_of_hexagons = len(hexagons)
         for i in range(0, number_of_hexagons):
-            for j in range(0, number_of_hexagons):
+            for j in range(i, number_of_hexagons):
                 if (
                     i != j and
                     hexagons[i] != None and

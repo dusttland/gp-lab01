@@ -114,10 +114,21 @@ def astar():
     print(node.state)
     print("Duration: %f" % (end - start))
 
+def comparison():
+    game = Game.from_collection(HEXAGON_COLORS_LIST)
+    problem = GameProblem(game)
+    search.compare_searchers([problem], [
+        search.astar_search,
+        search.breadth_first_search,
+    ])
+
 
 def main():
     # hill_climb_and_astar()
     astar()
+    # comparison()
+
+    
     
 
 main()
