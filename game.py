@@ -35,14 +35,14 @@ class Game:
         return string[1:]
 
     def from_collection(collection):
-        """Static factory method to get game instance from complete 
+        """Static factory method to get game instance from complete
         collection."""
         hexagons = []
         for colors in collection:
             if colors != None:
                 hexagons.append(Hexagon(colors))
             else:
-                hexagons.append(None)                
+                hexagons.append(None)
         return Game(hexagons)
 
     def empty(number_of_hexagons):
@@ -51,7 +51,20 @@ class Game:
             hexagons.append(None)
         return Game(hexagons)
 
+    def progress(self):
+        """http://stackoverflow.com/a/27871113"""
+        count = self.number_of_valid_connections()
+        total = self.number_of_connections()
+        bar_len = 60
+        filled_len = int(round(bar_len * count / float(total)))
 
+        percents = round(100.0 * count / float(total), 1)
+        bar = '=' * filled_len + '-' * (bar_len - filled_len)
+
+        if (percents == 100):
+            print('[%s] %s%s\r' % (bar, percents, '%'))
+        else:
+            print('[%s] %s%s ...\r' % (bar, percents, '%'), end="")
 
     # Queries
 
@@ -69,7 +82,7 @@ class Game:
     def is_solved(self):
         """Returns true if game is solved."""
         connections = self.connections()
-        for connection in connections:       
+        for connection in connections:
             if not self.is_valid_connection(connection):
                 return False
         return True
@@ -95,7 +108,7 @@ class Game:
         """Returns all the connections between hexagons in this game.
 
         Example of connections' structure (numbers are the ids of hexagons):
-            
+
                 | 0 |
               | 1 | 2 |
 
@@ -116,8 +129,8 @@ class Game:
                 ...
             ]
 
-        The function divides all hexagons into groups of three where all three 
-        of them connect. Then it adds all the connections between those three 
+        The function divides all hexagons into groups of three where all three
+        of them connect. Then it adds all the connections between those three
         hexagons to the list that is returned."""
         connections = []
         depth = self.depth()
@@ -152,7 +165,7 @@ class Game:
 
     def colors_in_connection(self, connection):
         """Returns the colors siding the given connection."""
-        if (self.hexagon(connection[0][0]) == None 
+        if (self.hexagon(connection[0][0]) == None
                 or self.hexagon(connection[1][0]) == None):
             return None
         color1 = self.hexagon(connection[0][0]).color(connection[0][1])
@@ -194,8 +207,8 @@ class Game:
         return valid_connections
 
     def heuristic(self):
-        """Returns the huristic score of current board. It counts all the 
-        connections siding all hexagons. Then subtracts the ones, that are 
+        """Returns the heuristic score of current board. It counts all the
+        connections siding all hexagons. Then subtracts the ones, that are
         valid. The more connections hexagon has, the more important it is."""
         if None in self._hexagons:
             return sys.maxsize
@@ -224,8 +237,35 @@ class Game:
 
         return score
 
+    def graph_heuristic(self):
+        if None in self._hexagons:
+            return sys.maxsize
+
+        score = 0
+        number_of_hexagons = self.number_of_hexagons()
+
+        for hexagon_idx in range(0, number_of_hexagons):
+            hexagon_connections = self.connections_for_hexagon(hexagon_idx)
+            number_of_connections = len(hexagon_connections)
+
+            number_of_valid_connections = 0
+
+            for connection in hexagon_connections:
+                if self.is_valid_connection(connection):
+                    number_of_valid_connections += 1
+
+            this_score = number_of_connections - number_of_valid_connections
+
+            if number_of_connections == 6:
+                this_score *= 22
+            elif number_of_connections == 4:
+                this_score *= 10
+
+            score += this_score
+        return score
+
     def value(self):
-        """Returns the value of current state. Used in hill-climbing 
+        """Returns the value of current state. Used in hill-climbing
         algorithm. Opposite of heuristic basically."""
         score = 0
         number_of_hexagons = self.number_of_hexagons()
@@ -264,18 +304,18 @@ class Game:
         return hexagon_connections
 
     def as_tuple(self):
-        """Returns the game as one complete tuple containing colors of all 
+        """Returns the game as one complete tuple containing colors of all
         hexagons."""
         tuple_list = []
         for hexagon in self._hexagons:
             if hexagon != None:
                 tuple_list.append(hexagon.as_tuple())
             else:
-                tuple_list.append(None)                
+                tuple_list.append(None)
         return tuple(tuple_list)
 
     def as_list(self):
-        """Returns the game as one complete list containig colors of all 
+        """Returns the game as one complete list containig colors of all
         hexagons."""
         complete_list = []
         for hexagon in self._hexagons:
@@ -317,7 +357,7 @@ class Game:
         self._hexagons = tuple(hexagon_list)
 
     def switch_hexagons(self, hexagon_index1, hexagon_index2):
-        """Switch hexagons' positions with each other. Inputs are hexagon 
+        """Switch hexagons' positions with each other. Inputs are hexagon
         indexes."""
         temp_hexagon = self._hexagons[hexagon_index1]
         hexagon_list = list(self._hexagons)
@@ -368,7 +408,7 @@ class Game:
                 if (
                     i != j and
                     hexagons[i] != None and
-                    hexagons[j] != None and 
+                    hexagons[j] != None and
                     hexagons[i] == hexagons[j]
                 ):
                     return False

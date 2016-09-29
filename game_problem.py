@@ -35,12 +35,18 @@ class GameProblem(Problem):
 
     def goal_test(self, state):
         game = Game.from_collection(state)
+        game.progress()
         return game.is_solved()
 
     def h(self, node):
         """Heuristic: the less invalid connections, the better."""
         game = Game.from_collection(node.state)
         return game.heuristic()
+
+    def graph_h(self, node):
+        """Heuristic: the less invalid connections, the better."""
+        game = Game.from_collection(node.state)
+        return game.graph_heuristic()
 
 
     # Static methods
