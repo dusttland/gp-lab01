@@ -55,15 +55,16 @@ class Game:
         """http://stackoverflow.com/a/27871113"""
         count = self.number_of_valid_connections()
         total = self.number_of_connections()
-        suffix = ''
         bar_len = 60
         filled_len = int(round(bar_len * count / float(total)))
 
         percents = round(100.0 * count / float(total), 1)
         bar = '=' * filled_len + '-' * (bar_len - filled_len)
 
-        print('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix), end="")
-        #sys.stdout.flush()  # As suggested by Rom Ruben
+        if (percents == 100):
+            print('[%s] %s%s\r' % (bar, percents, '%'))
+        else:
+            print('[%s] %s%s ...\r' % (bar, percents, '%'), end="")
 
     # Queries
 

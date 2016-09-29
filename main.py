@@ -125,7 +125,7 @@ def best_first_graph_search():
     print("Duration: %f" % (end - start))
 
 def main():
-    hill_climb_and_astar()
+    # hill_climb_and_astar()
     astar()
     best_first_graph_search()
 
