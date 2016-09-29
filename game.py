@@ -1,3 +1,5 @@
+import sys
+
 from hexagon import Hexagon
 
 # ______________________________________________________________________________
@@ -16,9 +18,6 @@ class Game:
     """
 
     def __init__(self, hexagons):
-        number_of_hexagons = len(hexagons)
-        if not Game.valid_number_of_objects_in_triangle(number_of_hexagons):
-            raise ValueError("Invalid number of hexagons.")
         self._hexagons = tuple(hexagons)
 
     def __str__(self):
@@ -35,20 +34,29 @@ class Game:
 
         return string[1:]
 
-    def from_list(complete_list):
-        """Static factory method to get game instance from list."""
-        hexagons = Game.hexagons_from_complete_list(complete_list)
+    def from_collection(collection):
+        """Static factory method to get game instance from complete 
+        collection."""
+        hexagons = []
+        for colors in collection:
+            if colors != None:
+                hexagons.append(Hexagon(colors))
+            else:
+                hexagons.append(None)                
         return Game(hexagons)
 
-    def from_tuple(complete_tuple):
-        """Static factory method to get game instance from tuple."""
+    def empty(number_of_hexagons):
         hexagons = []
-        for colors in complete_tuple:
-            hexagons.append(Hexagon(colors))
+        for i in range(0, number_of_hexagons):
+            hexagons.append(None)
         return Game(hexagons)
+
 
 
     # Queries
+
+    def hexagons(self):
+        return self._hexagons
 
     def hexagon(self, index):
         """Returns the hexagon at the specific index."""
@@ -144,12 +152,21 @@ class Game:
 
     def colors_in_connection(self, connection):
         """Returns the colors siding the given connection."""
+        if (self.hexagon(connection[0][0]) == None 
+                or self.hexagon(connection[1][0]) == None):
+            return None
         color1 = self.hexagon(connection[0][0]).color(connection[0][1])
         color2 = self.hexagon(connection[1][0]).color(connection[1][1])
         return color1, color2
 
     def is_valid_connection(self, connection):
-        color1, color2 = self.colors_in_connection(connection)
+        colors = self.colors_in_connection(connection)
+
+        if colors == None:
+            return False
+
+        color1, color2 = colors
+
         if color1 == color2:
             return True
         return False
@@ -180,6 +197,9 @@ class Game:
         """Returns the huristic score of current board. It counts all the 
         connections siding all hexagons. Then subtracts the ones, that are 
         valid. The more connections hexagon has, the more important it is."""
+        if None in self._hexagons:
+            return sys.maxsize
+
         score = 0
         number_of_hexagons = self.number_of_hexagons()
 
@@ -201,6 +221,38 @@ class Game:
                 this_score = this_score * 10
 
             score = score + this_score
+
+        return score
+
+    def value(self):
+        """Returns the value of current state. Used in hill-climbing 
+        algorithm. Opposite of heuristic basically."""
+        score = 0
+        number_of_hexagons = self.number_of_hexagons()
+
+        for hexagon_idx in range(0, number_of_hexagons):
+            if self.hexagon(hexagon_idx) == None:
+                score -= 1
+                continue
+
+            hexagon_connections = self.connections_for_hexagon(hexagon_idx)
+            number_of_connections = len(hexagon_connections)
+
+            number_of_valid_connections = 0
+
+            for connection in hexagon_connections:
+                if self.is_valid_connection(connection):
+                    number_of_valid_connections = number_of_valid_connections + 1
+
+            this_score = number_of_valid_connections
+
+            if number_of_connections == 6:
+                this_score = this_score * 22
+            elif number_of_connections == 4:
+                this_score = this_score * 10
+
+            score = score + this_score
+
         return score
 
     def connections_for_hexagon(self, hexagon_idx):
@@ -216,16 +268,50 @@ class Game:
         hexagons."""
         tuple_list = []
         for hexagon in self._hexagons:
-            tuple_list.append(hexagon.as_tuple())
+            if hexagon != None:
+                tuple_list.append(hexagon.as_tuple())
+            else:
+                tuple_list.append(None)                
         return tuple(tuple_list)
 
-        
+    def as_list(self):
+        """Returns the game as one complete list containig colors of all 
+        hexagons."""
+        complete_list = []
+        for hexagon in self._hexagons:
+            if hexagon != None:
+                complete_list.append(hexagon.as_list())
+            else:
+                complete_list.append(None)
+        return complete_list
+
+    def hexagon_exists(self, hexagon):
+        """Tests if hexagon already exists in the game."""
+        number_of_hexagons = self.number_of_hexagons()
+        for existing_hexagon in self._hexagons:
+            if hexagon == existing_hexagon:
+                return True
+        return False
+
+    def is_valid(self):
+        number_of_hexagons = self.number_of_hexagons()
+        if not Game.valid_number_of_objects_in_triangle(number_of_hexagons):
+            return False
+
+        if not Game.are_all_hexagons_unique(self._hexagons):
+            return False
+
+        return True
+
 
     # Commands
 
     def place_hexagon(self, hexagon, hexagon_index):
         """Places a new hexagon to the given location. If a hexagon exists
         in the indexed position, it will be replaced by the new one."""
+        if self.hexagon_exists(hexagon):
+            raise ValueError("Hexagon already exists in the game.")
+
         hexagon_list = list(self._hexagons)
         hexagon_list[hexagon_index] = hexagon
         self._hexagons = tuple(hexagon_list)
@@ -274,3 +360,16 @@ class Game:
         for number in range(from_number, to_number):
             number_list.append(number)
         return number_list
+
+    def are_all_hexagons_unique(hexagons):
+        number_of_hexagons = len(hexagons)
+        for i in range(0, number_of_hexagons):
+            for j in range(i, number_of_hexagons):
+                if (
+                    i != j and
+                    hexagons[i] != None and
+                    hexagons[j] != None and 
+                    hexagons[i] == hexagons[j]
+                ):
+                    return False
+        return True
