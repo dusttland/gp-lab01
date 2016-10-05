@@ -19,8 +19,14 @@ class Game:
 
     def __init__(self, hexagons, depth=0, connections=None):
         self._hexagons = tuple(hexagons)
-        self._depth = depth
-        self._connections = connections
+
+        if connections == None:
+            self._depth = self.generate_depth()
+            self._connections = self.generate_connections()
+        else:
+            self._depth = depth
+            self._connections = connections  
+        
 
     def __str__(self):
         string = ""
@@ -99,20 +105,20 @@ class Game:
     def depth(self):
         return self._depth
 
-    def generate_depth(hexagons):
+    def generate_depth(self):
         depth = 0
         number_of_objects_in_depth = 0
-        while number_of_objects_in_depth < len(hexagons):
+        while number_of_objects_in_depth < len(self._hexagons):
             depth += 1
             number_of_objects_in_depth += depth
-            if number_of_objects_in_depth == len(hexagons):
+            if number_of_objects_in_depth == len(self._hexagons):
                 return depth
         return None
 
     def connections(self):
         return self._connections
 
-    def generate_connections(depth):
+    def generate_connections(self):
         """Returns all the connections between hexagons in this game.
 
         Example of connections' structure (numbers are the ids of hexagons):
@@ -141,6 +147,7 @@ class Game:
         of them connect. Then it adds all the connections between those three
         hexagons to the list that is returned."""
         connections = []
+        depth = self.depth()
 
         for current_depth in range(2, depth + 1):
             upper_hexagon_idxs = Game.hexagon_idxs_at_depth(current_depth - 1)

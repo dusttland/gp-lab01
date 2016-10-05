@@ -16,8 +16,8 @@ class GameProblem(Problem):
 
         self.initial = game.as_tuple()
         self.all_moves = GameProblem.get_all_possible_moves_as_list(game)
-        self.depth = Game.generate_depth(game.hexagons())
-        self.connections = Game.generate_connections(self.depth)
+        self.depth = game.depth()
+        self.connections = game.connections()
 
     def actions(self, state):
         return self.all_moves

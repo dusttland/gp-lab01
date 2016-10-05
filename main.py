@@ -127,6 +127,6 @@ def best_first_graph_search():
 def main():
     # hill_climb_and_astar()
     astar()
-    # best_first_graph_search()
+    best_first_graph_search()
 
 main()
