@@ -17,8 +17,10 @@ class Game:
 
     """
 
-    def __init__(self, hexagons):
+    def __init__(self, hexagons, depth=0, connections=None):
         self._hexagons = tuple(hexagons)
+        self._depth = depth
+        self._connections = connections
 
     def __str__(self):
         string = ""
@@ -34,7 +36,7 @@ class Game:
 
         return string[1:]
 
-    def from_collection(collection):
+    def from_collection(collection, depth=0, connections=None):
         """Static factory method to get game instance from complete
         collection."""
         hexagons = []
@@ -43,7 +45,7 @@ class Game:
                 hexagons.append(Hexagon(colors))
             else:
                 hexagons.append(None)
-        return Game(hexagons)
+        return Game(hexagons, depth, connections)
 
     def empty(number_of_hexagons):
         hexagons = []
@@ -95,16 +97,22 @@ class Game:
         return connections
 
     def depth(self):
+        return self._depth
+
+    def generate_depth(hexagons):
         depth = 0
         number_of_objects_in_depth = 0
-        while number_of_objects_in_depth < self.number_of_hexagons():
+        while number_of_objects_in_depth < len(hexagons):
             depth += 1
             number_of_objects_in_depth += depth
-            if number_of_objects_in_depth == self.number_of_hexagons():
+            if number_of_objects_in_depth == len(hexagons):
                 return depth
         return None
 
     def connections(self):
+        return self._connections
+
+    def generate_connections(depth):
         """Returns all the connections between hexagons in this game.
 
         Example of connections' structure (numbers are the ids of hexagons):
@@ -133,7 +141,6 @@ class Game:
         of them connect. Then it adds all the connections between those three
         hexagons to the list that is returned."""
         connections = []
-        depth = self.depth()
 
         for current_depth in range(2, depth + 1):
             upper_hexagon_idxs = Game.hexagon_idxs_at_depth(current_depth - 1)

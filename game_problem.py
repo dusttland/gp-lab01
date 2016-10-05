@@ -16,13 +16,15 @@ class GameProblem(Problem):
 
         self.initial = game.as_tuple()
         self.all_moves = GameProblem.get_all_possible_moves_as_list(game)
+        self.depth = Game.generate_depth(game.hexagons())
+        self.connections = Game.generate_connections(self.depth)
 
     def actions(self, state):
         return self.all_moves
         
 
     def result(self, state, action):
-        game = Game.from_collection(state)
+        game = Game.from_collection(state, self.depth, self.connections)
 
         if action[0] == "switch":
             game.switch_hexagons(action[1], action[2])
@@ -34,18 +36,18 @@ class GameProblem(Problem):
         return game.as_tuple()
 
     def goal_test(self, state):
-        game = Game.from_collection(state)
+        game = Game.from_collection(state, self.depth, self.connections)
         game.progress()
         return game.is_solved()
 
     def h(self, node):
         """Heuristic: the less invalid connections, the better."""
-        game = Game.from_collection(node.state)
+        game = Game.from_collection(node.state, self.depth, self.connections)
         return game.heuristic()
 
     def graph_h(self, node):
         """Heuristic: the less invalid connections, the better."""
-        game = Game.from_collection(node.state)
+        game = Game.from_collection(node.state, self.depth, self.connections)
         return game.graph_heuristic()
 
 
